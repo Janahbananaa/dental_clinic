@@ -3,34 +3,36 @@ from mysql.connector import Error
 from typing import List, Dict, Any
 
 class DatabaseManager:
-    def __init__(self, host: str, user: str, password: str, database: str):
+    def __init__(self, host: str, user: str, password: str, database: str, port: int = 3306):
         self.host = host
         self.user = user
         self.password = password
         self.database = database
+        self.port = port
         self.connection = None
     
     def connect(self):
+        """Connect to the database"""
         try:
             self.connection = mysql.connector.connect(
                 host=self.host,
                 user=self.user,
                 password=self.password,
-                database=self.database
+                database=self.database,
+                port=self.port
             )
-            if self.connection.is_connected():
-                print("✓ Database connected successfully")
-                return True
+            return True
         except Error as e:
-            print(f"✗ Database Error: {e}")
+            print(f"Database connection error: {e}")
             return False
     
     def disconnect(self):
+        """Disconnect from the database"""
         if self.connection and self.connection.is_connected():
             self.connection.close()
-            print("✓ Database connection closed")
     
-    def execute_query(self, query: str, params: tuple = None) -> bool:
+    def execute(self, query: str, params: tuple = None):
+        """Execute INSERT, UPDATE, DELETE queries"""
         try:
             cursor = self.connection.cursor()
             if params:
@@ -41,24 +43,12 @@ class DatabaseManager:
             cursor.close()
             return True
         except Error as e:
-            print(f"Query error: {e}")
+            print(f"Execute error: {e}")
+            self.connection.rollback()
             return False
     
-    def fetch_all(self, query: str, params: tuple = None) -> List[Dict]:
-        try:
-            cursor = self.connection.cursor(dictionary=True)
-            if params:
-                cursor.execute(query, params)
-            else:
-                cursor.execute(query)
-            results = cursor.fetchall()
-            cursor.close()
-            return results
-        except Error as e:
-            print(f"Fetch error: {e}")
-            return []
-    
-    def fetch_one(self, query: str, params: tuple = None) -> Dict:
+    def fetch_one(self, query: str, params: tuple = None):
+        """Fetch a single row"""
         try:
             cursor = self.connection.cursor(dictionary=True)
             if params:
@@ -71,3 +61,18 @@ class DatabaseManager:
         except Error as e:
             print(f"Fetch error: {e}")
             return None
+    
+    def fetch_all(self, query: str, params: tuple = None):
+        """Fetch all rows"""
+        try:
+            cursor = self.connection.cursor(dictionary=True)
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+            results = cursor.fetchall()
+            cursor.close()
+            return results
+        except Error as e:
+            print(f"Fetch error: {e}")
+            return []

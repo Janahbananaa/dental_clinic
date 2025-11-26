@@ -11,9 +11,7 @@ class DatabaseManager:
         self.database = database
         self.connection: Optional[mysql.connector.connection.MySQLConnection] = None
 
-    # -------------------------------
-    # Connect to database
-    # -------------------------------
+
     def connect(self) -> bool:
         try:
             self.connection = mysql.connector.connect(
@@ -29,17 +27,11 @@ class DatabaseManager:
             print(f"Database connection error: {e}")
             return False
 
-    # -------------------------------
-    # Disconnect from database
-    # -------------------------------
     def disconnect(self):
         if self.connection and self.connection.is_connected():
             self.connection.close()
             print("Database connection closed")
 
-    # -------------------------------
-    # Execute insert/update/delete queries
-    # -------------------------------
     def execute_query(self, query: str, params: tuple = None) -> bool:
         if not self.connection or not self.connection.is_connected():
             print("Database not connected")
@@ -57,9 +49,6 @@ class DatabaseManager:
             print(f"Query execution error: {e}")
             return False
 
-    # -------------------------------
-    # Fetch multiple rows
-    # -------------------------------
     def fetch_all(self, query: str, params: tuple = None) -> List[Dict[str, Any]]:
         if not self.connection or not self.connection.is_connected():
             print("Database not connected")
@@ -77,9 +66,6 @@ class DatabaseManager:
             print(f"Fetch error: {e}")
             return []
 
-    # -------------------------------
-    # Fetch single row
-    # -------------------------------
     def fetch_one(self, query: str, params: tuple = None) -> Optional[Dict[str, Any]]:
         if not self.connection or not self.connection.is_connected():
             print("Database not connected")
@@ -96,10 +82,6 @@ class DatabaseManager:
         except Error as e:
             print(f"Fetch error: {e}")
             return None
-
-    # -------------------------------
-    # Convenience methods for dashboard
-    # -------------------------------
 
     def get_appointments_today(self) -> List[Dict[str, Any]]:
         today = datetime.date.today()

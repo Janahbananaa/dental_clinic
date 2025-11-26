@@ -87,7 +87,7 @@ class HomeScreen:
         dentist_btn_frame.pack(side="left", fill="both", expand=True, padx=(0, 15))
         
         dentist_btn = ctk.CTkButton(dentist_btn_frame, text="👨‍⚕️\nDentist Schedule", 
-                                    command=lambda: self.on_navigate("doctors"),
+                                    command=lambda: self.on_navigate("dentist_schedule"),
                                     font=("Arial", 16, "bold"), fg_color="#1e3a8a",
                                     hover_color="#1e40af", text_color="#ffffff",
                                     height=140)
@@ -125,8 +125,13 @@ class HomeScreen:
                     width=150, height=50, font=("Arial", 12, "bold"),
                     fg_color="#f59e0b", hover_color="#d97706").pack(side="left", padx=10)
         
+        CustomButton(buttons_frame, text="👨‍⚕️ Dentists", 
+                    command=lambda: self.on_navigate("dentists"),
+                    width=150, height=50, font=("Arial", 12, "bold"),
+                    fg_color="#ec4899", hover_color="#db2777").pack(side="left", padx=10)
+        
         CustomButton(buttons_frame, text="👥 Patient Records", 
-                    command=lambda: self.on_navigate("patients"),
+                    command=lambda: self.on_navigate("patient_records"),
                     width=150, height=50, font=("Arial", 12, "bold"),
                     fg_color="#8b5cf6", hover_color="#7c3aed").pack(side="left", padx=10)
     

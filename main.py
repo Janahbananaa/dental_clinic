@@ -8,6 +8,8 @@ from screens.patients import PatientsScreen
 from screens.patient_records import PatientRecordsScreen
 from screens.doctors import DoctorsScreen
 from screens.appointments import AppointmentsScreen
+from screens.dentist_schedule import DentistScheduleScreen
+from screens.Dentists import DentistsScreen
 from screens.billing import BillingScreen
 
 ctk.set_appearance_mode(APP_THEME)
@@ -31,7 +33,9 @@ class DentalClinicApp(ctk.CTk):
         self.patients_screen = PatientsScreen(self, self.db, self.go_to_home)
         self.patient_records_screen = PatientRecordsScreen(self, self.db, self.go_to_home)
         self.doctors_screen = DoctorsScreen(self, self.db, self.go_to_home)
-        self.appointments_screen = AppointmentsScreen(self, self.db, self.go_to_home)
+        self.appointments_screen = AppointmentsScreen(self, self.db, self.go_to_home, self.on_navigate)
+        self.dentist_schedule_screen = DentistScheduleScreen(self, self.db, self.go_to_home, self.on_appointment_status_changed)
+        self.dentists_screen = DentistsScreen(self, self.db, self.go_to_home)
         self.billing_screen = BillingScreen(self, self.db, self.go_to_home)
 
         self.show_login()
@@ -128,7 +132,9 @@ class DentalClinicApp(ctk.CTk):
             self.patients_screen = PatientsScreen(self, self.db, self.go_to_home)
             self.patient_records_screen = PatientRecordsScreen(self, self.db, self.go_to_home)
             self.doctors_screen = DoctorsScreen(self, self.db, self.go_to_home)
-            self.appointments_screen = AppointmentsScreen(self, self.db, self.go_to_home)
+            self.appointments_screen = AppointmentsScreen(self, self.db, self.go_to_home, self.on_navigate)
+            self.dentist_schedule_screen = DentistScheduleScreen(self, self.db, self.go_to_home, self.on_appointment_status_changed)
+            self.dentists_screen = DentistsScreen(self, self.db, self.go_to_home)
             self.billing_screen = BillingScreen(self, self.db, self.go_to_home)
             self.show_login()
         else:
@@ -173,6 +179,12 @@ class DentalClinicApp(ctk.CTk):
         elif screen_name == "appointments_today":
             self.appointments_screen.show_today()
             self.current_screen = self.appointments_screen
+        elif screen_name == "dentist_schedule":
+            self.dentist_schedule_screen.show()
+            self.current_screen = self.dentist_schedule_screen
+        elif screen_name == "dentists":
+            self.dentists_screen.show()
+            self.current_screen = self.dentists_screen
         elif screen_name == "billing":
             self.billing_screen.show()
             self.current_screen = self.billing_screen
@@ -180,6 +192,15 @@ class DentalClinicApp(ctk.CTk):
     def on_logout(self):
         self.current_user = None
         self.show_login()
+
+    def on_appointment_status_changed(self):
+        """Called when appointment status changes in dentist schedule"""
+        # Refresh the appointments screen if it's currently showing
+        if self.current_screen == self.appointments_screen:
+            if self.appointments_screen.is_today_view:
+                self.appointments_screen.load_today_appointments()
+            else:
+                self.appointments_screen.load_appointments()
 
     def _hide_current_screen(self):
         if self.current_screen:
