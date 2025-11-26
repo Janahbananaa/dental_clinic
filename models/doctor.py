@@ -1,43 +1,46 @@
 from typing import Optional
 
 class Doctor:
-    def __init__(self, db, doctor_id: int = None, name: str = "", specialization: str = "", 
-                 phone: str = "", email: str = ""):
+    def __init__(self, db, dentist_id: int = None, first_name: str = "", last_name: str = "",
+                 license_number: str = "", specialization: str = "", years_experience: int = 0):
         self.db = db
-        self.doctor_id = doctor_id
-        self.name = name
+        self.dentist_id = dentist_id
+        self.first_name = first_name
+        self.last_name = last_name
+        self.license_number = license_number
         self.specialization = specialization
-        self.phone = phone
-        self.email = email
+        self.years_experience = years_experience
     
     def save(self) -> bool:
-        if self.doctor_id:
-            query = """UPDATE doctors SET name=%s, specialization=%s, phone=%s, email=%s 
-                      WHERE doctor_id=%s"""
-            return self.db.execute_query(query, (self.name, self.specialization, 
-                                                  self.phone, self.email, self.doctor_id))
+        if self.dentist_id:
+            query = """UPDATE dentists SET first_name=%s, last_name=%s, license_number=%s, 
+                      specialization=%s, years_experience=%s WHERE dentist_id=%s"""
+            return self.db.execute_query(query, (self.first_name, self.last_name, 
+                                                  self.license_number, self.specialization,
+                                                  self.years_experience, self.dentist_id))
         else:
-            query = """INSERT INTO doctors (name, specialization, phone, email) 
-                      VALUES (%s, %s, %s, %s)"""
-            return self.db.execute_query(query, (self.name, self.specialization, 
-                                                  self.phone, self.email))
+            query = """INSERT INTO dentists (first_name, last_name, license_number, 
+                      specialization, years_experience) VALUES (%s, %s, %s, %s, %s)"""
+            return self.db.execute_query(query, (self.first_name, self.last_name,
+                                                  self.license_number, self.specialization,
+                                                  self.years_experience))
     
     @staticmethod
     def get_all(db) -> list:
-        query = "SELECT * FROM doctors"
+        query = "SELECT * FROM dentists"
         return db.fetch_all(query)
     
     @staticmethod
-    def get_by_id(db, doctor_id: int) -> Optional['Doctor']:
-        query = "SELECT * FROM doctors WHERE doctor_id=%s"
-        result = db.fetch_one(query, (doctor_id,))
+    def get_by_id(db, dentist_id: int) -> Optional['Doctor']:
+        query = "SELECT * FROM dentists WHERE dentist_id=%s"
+        result = db.fetch_one(query, (dentist_id,))
         if result:
-            return Doctor(db, result['doctor_id'], result['name'], result['specialization'],
-                         result['phone'], result['email'])
+            return Doctor(db, result['dentist_id'], result['first_name'], result['last_name'],
+                         result['license_number'], result['specialization'], result['years_experience'])
         return None
     
     def delete(self) -> bool:
-        if self.doctor_id:
-            query = "DELETE FROM doctors WHERE doctor_id=%s"
-            return self.db.execute_query(query, (self.doctor_id,))
+        if self.dentist_id:
+            query = "DELETE FROM dentists WHERE dentist_id=%s"
+            return self.db.execute_query(query, (self.dentist_id,))
         return False

@@ -23,7 +23,7 @@ class HomeScreen:
         if self.header:
             self.header.destroy()
         
-        # Recreate header with better styling
+        # Recreate header
         self.header = ctk.CTkFrame(self.frame, fg_color="#1e293b", height=70)
         self.header.pack(fill="x", padx=0, pady=0, side="top", before=self.content)
         
@@ -68,81 +68,67 @@ class HomeScreen:
         
         # Main dashboard content
         main_content = ctk.CTkFrame(self.content, fg_color="transparent")
-        main_content.pack(fill="both", expand=True)
+        main_content.pack(fill="both", expand=True, padx=20, pady=20)
         
-        # Welcome section
-        welcome_frame = ctk.CTkFrame(main_content, fg_color="transparent")
-        welcome_frame.pack(fill="x", padx=30, pady=(20, 30))
+        # Title Section
+        title_section = ctk.CTkFrame(main_content, fg_color="transparent")
+        title_section.pack(fill="x", padx=20, pady=(0, 30))
         
-        welcome_label = ctk.CTkLabel(welcome_frame, text="Dashboard", 
+        welcome_label = ctk.CTkLabel(title_section, text="Clinic Dashboard", 
                                     font=("Arial", 28, "bold"), text_color="#ffffff")
         welcome_label.pack(anchor="w")
         
-        welcome_desc = ctk.CTkLabel(welcome_frame, 
-                                   text="Manage your dental clinic efficiently",
-                                   font=("Arial", 12), text_color="#94a3b8")
-        welcome_desc.pack(anchor="w", pady=(5, 0))
+        # Main Action Buttons Section (Large boxes)
+        action_section = ctk.CTkFrame(main_content, fg_color="transparent")
+        action_section.pack(fill="x", padx=20, pady=(0, 30))
         
-        # Stats section
-        stats_frame = ctk.CTkFrame(main_content, fg_color="transparent")
-        stats_frame.pack(fill="x", padx=30, pady=(0, 30))
+        # Dentist Schedule Button
+        dentist_btn_frame = ctk.CTkFrame(action_section, fg_color="#1e3a8a", corner_radius=15)
+        dentist_btn_frame.pack(side="left", fill="both", expand=True, padx=(0, 15))
         
-        self._create_stat_card(stats_frame, "👥", "Patients", "150", "#3b82f6")
-        self._create_stat_card(stats_frame, "👨‍⚕️", "Doctors", "8", "#10b981")
-        self._create_stat_card(stats_frame, "📅", "Appointments Today", "12", "#f59e0b")
-        self._create_stat_card(stats_frame, "✅", "Completed", "45", "#8b5cf6")
+        dentist_btn = ctk.CTkButton(dentist_btn_frame, text="👨‍⚕️\nDentist Schedule", 
+                                    command=lambda: self.on_navigate("doctors"),
+                                    font=("Arial", 16, "bold"), fg_color="#1e3a8a",
+                                    hover_color="#1e40af", text_color="#ffffff",
+                                    height=140)
+        dentist_btn.pack(fill="both", expand=True, padx=2, pady=2)
         
-        # Quick actions section
-        actions_title = ctk.CTkLabel(main_content, text="Quick Actions", 
-                                    font=("Arial", 16, "bold"), text_color="#ffffff")
-        actions_title.pack(anchor="w", padx=30, pady=(20, 15))
+        # Appointment Today Button
+        appt_btn_frame = ctk.CTkFrame(action_section, fg_color="#059669", corner_radius=15)
+        appt_btn_frame.pack(side="left", fill="both", expand=True)
         
-        # Action buttons
-        button_frame = ctk.CTkFrame(main_content, fg_color="transparent")
-        button_frame.pack(fill="x", padx=30, pady=(0, 20))
+        appt_btn = ctk.CTkButton(appt_btn_frame, text="📅\nAppointment Today", 
+                                command=lambda: self.on_navigate("appointments_today"),
+                                font=("Arial", 16, "bold"), fg_color="#059669",
+                                hover_color="#047857", text_color="#ffffff",
+                                height=140)
+        appt_btn.pack(fill="both", expand=True, padx=2, pady=2)
         
-        self._create_action_button(button_frame, "👥 Patients", "Manage patient records", 
-                                  lambda: self.on_navigate("patients"), "#3b82f6")
-        self._create_action_button(button_frame, "👨‍⚕️ Doctors", "Doctor information", 
-                                  lambda: self.on_navigate("doctors"), "#10b981")
-        self._create_action_button(button_frame, "📅 Appointments", "Schedule appointments", 
-                                  lambda: self.on_navigate("appointments"), "#f59e0b")
-    
-    def _create_stat_card(self, parent, icon, title, value, color):
-        card = ctk.CTkFrame(parent, fg_color="#1e293b", corner_radius=10)
-        card.pack(side="left", fill="both", expand=True, padx=10, pady=5)
+        # Secondary Actions Section
+        secondary_section = ctk.CTkFrame(main_content, fg_color="transparent")
+        secondary_section.pack(fill="x", padx=20, pady=(0, 20))
         
-        content = ctk.CTkFrame(card, fg_color="#1e293b")
-        content.pack(fill="both", expand=True, padx=20, pady=15)
+        secondary_label = ctk.CTkLabel(secondary_section, text="Management", 
+                                      font=("Arial", 14, "bold"), text_color="#cbd5e1")
+        secondary_label.pack(anchor="w", pady=(0, 10))
         
-        icon_label = ctk.CTkLabel(content, text=icon, font=("Arial", 32))
-        icon_label.pack()
+        buttons_frame = ctk.CTkFrame(secondary_section, fg_color="transparent")
+        buttons_frame.pack(fill="x")
         
-        title_label = ctk.CTkLabel(content, text=title, font=("Arial", 11), text_color="#94a3b8")
-        title_label.pack(pady=(10, 5))
+        CustomButton(buttons_frame, text="📋 Appointments", 
+                    command=lambda: self.on_navigate("appointments"),
+                    width=150, height=50, font=("Arial", 12, "bold"),
+                    fg_color="#3b82f6", hover_color="#2563eb").pack(side="left", padx=10)
         
-        value_label = ctk.CTkLabel(content, text=value, font=("Arial", 20, "bold"), text_color=color)
-        value_label.pack()
-    
-    def _create_action_button(self, parent, title, description, command, color):
-        btn_frame = ctk.CTkFrame(parent, fg_color="#1e293b", corner_radius=10)
-        btn_frame.pack(side="left", fill="both", expand=True, padx=10, pady=5)
+        CustomButton(buttons_frame, text="💳 Billing", 
+                    command=lambda: self.on_navigate("billing"),
+                    width=150, height=50, font=("Arial", 12, "bold"),
+                    fg_color="#f59e0b", hover_color="#d97706").pack(side="left", padx=10)
         
-        # Create button with hover effect
-        btn = CustomButton(btn_frame, text=f"{title}\n{description}", 
-                          command=command, font=("Arial", 12, "bold"),
-                          fg_color=color, hover_color=self._darken_color(color),
-                          width=200, height=80, text_color="#ffffff")
-        btn.pack(fill="both", expand=True, padx=1, pady=1)
-    
-    def _darken_color(self, color):
-        # Simple color darkening for hover effect
-        color_map = {
-            "#3b82f6": "#1d4ed8",
-            "#10b981": "#059669",
-            "#f59e0b": "#d97706"
-        }
-        return color_map.get(color, color)
+        CustomButton(buttons_frame, text="👥 Patient Records", 
+                    command=lambda: self.on_navigate("patients"),
+                    width=150, height=50, font=("Arial", 12, "bold"),
+                    fg_color="#8b5cf6", hover_color="#7c3aed").pack(side="left", padx=10)
     
     def set_user(self, user):
         self.current_user = user
